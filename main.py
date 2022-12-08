@@ -13,7 +13,6 @@ with open("olympics.tsv", "r") as file:
 # values = [x for x in sys.argv[2:]]
 # print(values)
 
-
-# if len(sys.argv) > 6:
-#     print("error")
-#     exit()
+if len(sys.argv) > 6:
+    print("error")
+    exit()
