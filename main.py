@@ -1,22 +1,4 @@
-import sys
-
-file1 = sys.argv[0]
-
-
-def check(new_line, counter):
-    if country in new_line[7]:
-        find_medals(country, game)
-    elif country not in new_line[7]:
-        print("This country didn't take part in games.")
-        exit()
-    elif game not in new_line[8]:
-        print("Invalid year.")
-        exit()
-    elif counter < 10:
-        print("This country has less than 10 medals((((")
-        exit()
-
-
+import argparse
 
 def find_medals(country, game):
     names = []
@@ -42,12 +24,7 @@ def find_medals(country, game):
     # check(new_line, counter)
     return medals
 
-
-def add_in_file():
-    pass
-
-def count_medals():
-    medals = find_medals(country, game)
+def count_medals(medals, country, game):
     gold = 0
     silver = 0
     bronze = 0
@@ -60,18 +37,39 @@ def count_medals():
             bronze += 1
     print(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
 
-def total():
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-medals',  help="country", type=str, nargs='+', required=True)
+    args = parser.parse_args()
+    print(args)
+    if args.medals:
+        country = args.medals[0]
+        year = args.medals[1]
+        game = args.medals[2]
+        medals = find_medals(country, year)
+        count_medals(medals, country, game)
+
+if __name__ == "__main__":
+    main()
+
+# def check(new_line, counter):
+#     if country in new_line[7]:
+#         find_medals(country, game)
+#     elif country not in new_line[7]:
+#         print("This country didn't take part in games.")
+#         exit()
+#     elif game not in new_line[8]:
+#         print("Invalid year.")
+#         exit()
+#     elif counter < 10:
+#         print("This country has less than 10 medals((((")
+#         exit()
+
+
+def add_in_file():
     pass
 
 
-country = input("Enter a country: ")
-game = input("Enter a game: ")
-mode = input("Enter a command: ")
 
-if mode == "-total":
-    total()
-elif mode == "-medal":
-    count_medals()
-elif mode == "-output":
-    find_medals(country, game)
-
+def total():
+    pass
