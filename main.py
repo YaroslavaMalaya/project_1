@@ -24,6 +24,8 @@ def find_medals(country, game):
     # check(new_line, counter)
     return medals
 
+print(find_medals("USA", "Summer"))
+
 def count_medals(medals, country, game):
     gold = 0
     silver = 0
@@ -39,15 +41,19 @@ def count_medals(medals, country, game):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-medals',  help="country", type=str, nargs='+', required=True)
+    parser.add_argument('-medals',  help="Enter country and a year to count medals", type=str, nargs='+', required=True)
+    parser.add_argument('-total', help="Enter country and a year to find number of medals", type=str, nargs='+')
     args = parser.parse_args()
-    print(args)
     if args.medals:
         country = args.medals[0]
         year = args.medals[1]
         game = args.medals[2]
         medals = find_medals(country, year)
         count_medals(medals, country, game)
+    if args.total:
+        country = args.medals[0]
+        year = args.medals[1]
+        total(country, year)
 
 if __name__ == "__main__":
     main()
@@ -71,5 +77,5 @@ def add_in_file():
 
 
 
-def total():
+def total(country, year):
     pass
