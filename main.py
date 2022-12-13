@@ -89,21 +89,22 @@ def main():
                         required=False)
     parser.add_argument("country")
     parser.add_argument("year")
-    parser.add_argument("-output", action="store_true", required=False)
-    parser.add_argument("newfile")
+    parser.add_argument("-output", type=str, required=False)
+    #parser.add_argument("newfile")
     parser.add_argument('-total', help="Enter year to find number of medals.")
     args = parser.parse_args()
-    # print(args)
+    print(args.output)
     filename = args.filename
     country = args.country
     year = args.year
     medals = args.medals
-    output = args.output
-    newfile = args.newfile
-    if medals == True and output == False:
+    newfile = args.output
+    #newfile = args.newfile
+    if medals == True:
         find_medals(filename, country, year)
-    elif medals == True and output == True:
-        get_output_medals(filename, country, year, newfile)
+    elif medals == True and newfile != "":
+        pass
+        #get_output_medals(filename, country, year, newfile)
 
 
 if __name__ == "__main__":
