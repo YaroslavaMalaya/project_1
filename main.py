@@ -62,9 +62,9 @@ def total(year, filename):
     if len(country_medals) == 0:
         print("Invalid year. This year didn't take part in games.")
     else:
-        for c in country_medals:
-            print(c, country_medals.get(c))
-    # return country_medals
+        for country_t in country_medals:
+            for medal_t in country_medals.get(country_t):
+                print(f"{country_t}: {medal_t}")
 
 
 def count_medals(medals, for_new):
@@ -79,32 +79,33 @@ def count_medals(medals, for_new):
         if "Bronze\n" in medal:
             bronze += 1
     print(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
-    for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
+    # for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
+    return gold + silver + bronze
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
-    parser.add_argument('-medals', help="Enter country and a year to count medals.", action="store_true",
-                        required=False)
-    parser.add_argument("country")
-    parser.add_argument("year")
-    parser.add_argument("-output", type=str, required=False)
-    #parser.add_argument("newfile")
-    parser.add_argument('-total', help="Enter year to find number of medals.")
+    parser.add_argument('--medals', "-m",  help="Enter country and a year to count medals", type=str, nargs='+')
+    parser.add_argument("--output", help="Enter a txt file name", type=str)
+    parser.add_argument('--total', "-t", help="Enter year to find number of medals", type=str, nargs='+')
+    parser.add_argument('--overall', "-o", help="Enter list of countries", nargs='+')
     args = parser.parse_args()
-    print(args.output)
-    filename = args.filename
-    country = args.country
-    year = args.year
-    medals = args.medals
-    newfile = args.output
-    #newfile = args.newfile
-    if medals == True:
-        find_medals(filename, country, year)
-    elif medals == True and newfile != "":
-        pass
-        #get_output_medals(filename, country, year, newfile)
+    print(args)
+    if args.medals:
+        country = args.medals[0]
+        year = args.medals[1]
+        game = args.medals[2]
+        game_and_year = year + " " + game
+        medals = find_medals(country, game_and_year)
+        count_medals(medals)
+    if args.total:
+        year = args.total[0]
+        print(year)
+        print(total(year, "olympics.tsv"))
+    if args.overall:
+        for country in args.overall:
+            print(overall(country))
 
 
 if __name__ == "__main__":
