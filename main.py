@@ -1,29 +1,29 @@
 import argparse
 
 
-def find_medals(filename, country, year):
+def find_medals(country, game):
     names = []
     medals = []
     counter = 0
-    for_new = ["First ten medalists."]
-    print("First ten medalists.")
-    with open(filename, "r") as file:
+    with open("olympics.tsv", "r") as file:
         file.readline()  # headline
         line = file.readline()
+        print("First ten medalists.")
         while line != "":
             new_line = line.split("\t")
-            if country in new_line[7] and year in new_line[9]:
-                if counter < 10 and new_line[-1] != "NA\n":
-                    m = new_line[-1].split("\n")[0]
-                    print(f'{counter + 1}) {new_line[1]} - {new_line[12]} - {m}')
-                    for_new.append(str(f'{counter + 1}) {new_line[1]} - {new_line[12]} - {m}'))
-                    counter += 1
-                    names.append(new_line[1])
+            if country == new_line[7] and game in new_line[8]:
+                while counter < 10:
+                    if new_line[1] not in names and new_line[-1] != "NA\n":
+                        m = new_line[-1].split("\n")[0]
+                        print(f"{counter + 1}) {new_line[1]} - {new_line[12]} - {m}")
+                        counter += 1
+                        names.append(new_line[1])
+                    else:
+                        break
                 medals.append(new_line[-1])
             line = file.readline()
-    count_medals(medals, for_new)
-    check(names, counter)
-    return for_new
+    # check(new_line, counter)
+    return medals
 
 
 def check(names, counter):
@@ -67,6 +67,23 @@ def total(year, filename):
                 print(f"{country_t}: {medal_t}")
 
 
+def overall(country):
+    medals_year = {"": 0}
+    with open("olympics.tsv", "r") as file:
+        file.readline()  # headline
+        line = file.readline()
+        while line != "":
+            new_line = line.split("\t")
+            if country == new_line[6] or country == new_line[7]:
+                if new_line[-1] != "NA\n" and new_line[9] not in medals_year:
+                    medals_year[new_line[9]] = 1
+                elif new_line[-1] != "NA\n":
+                    medals_year[new_line[9]] += 1
+            line = file.readline()
+
+    max(medals_year.items())
+
+
 def count_medals(medals, for_new):
     gold = 0
     silver = 0
@@ -79,7 +96,7 @@ def count_medals(medals, for_new):
         if "Bronze\n" in medal:
             bronze += 1
     print(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
-    # for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
+    # for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze}")
     return gold + silver + bronze
 
 def main():
@@ -104,8 +121,8 @@ def main():
         print(total(year, "olympics.tsv"))
     if args.overall:
         for country in args.overall:
-            pass
-            # print(overall(country))
+            print(overall(country))
+
 
 if __name__ == "__main__":
     main()
