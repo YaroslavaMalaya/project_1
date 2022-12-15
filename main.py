@@ -131,7 +131,7 @@ def interactive(country, filename):
                 yearm, minimum = min(overall(country, filename))
                 print(f"First attendance in {min_year1} in {city}.")
                 print(f"The most successful olympiad in {yearx} had {maximum} medals.")
-                print(f"The most successful olympiad in {yearm} had {minimum} medals.")
+                print(f"The worst olympiad in {yearm} had {minimum} medals.")
                 exit()
             line = file.readline()
 
