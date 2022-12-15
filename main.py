@@ -5,6 +5,7 @@ def find_medals(country, game, filename):
     names = []
     medals = []
     counter = 0
+    for_new = ["First ten medalists."]
     with open(filename, "r") as file:
         file.readline()  # headline
         line = file.readline()
@@ -16,6 +17,7 @@ def find_medals(country, game, filename):
                     if new_line[1] not in names and new_line[-1] != "NA\n":
                         m = new_line[-1].split("\n")[0]
                         print(f"{counter + 1}) {new_line[1]} - {new_line[12]} - {m}")
+                        for_new.append(f"{counter + 1}) {new_line[1]} - {new_line[12]} - {m}")
                         counter += 1
                         names.append(new_line[1])
                     else:
@@ -23,7 +25,7 @@ def find_medals(country, game, filename):
                 medals.append(new_line[-1])
             line = file.readline()
     check(new_line, counter)
-    return medals
+    return medals, for_new
 
 
 def check(names, counter):
@@ -35,8 +37,7 @@ def check(names, counter):
         quit()
 
 
-def get_output_medals(filename, country, game, newfile):
-    for_new = find_medals(country, game, filename)
+def get_output_medals(newfile, for_new):
     with open(newfile, "w+") as n_file:
         for line in for_new:
             print(line, file=n_file)
@@ -86,7 +87,7 @@ def overall(country, filename):
     return medals_year.items()
 
 
-def count_medals(medals):   # for_new
+def count_medals(medals, for_new):   # for_new
     gold = 0
     silver = 0
     bronze = 0
@@ -98,7 +99,7 @@ def count_medals(medals):   # for_new
         if "Bronze\n" in medal:
             bronze += 1
     print(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze} ")
-    # for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze}")
+    for_new.append(f"amount of gold medals {gold}\namount of silver medals {silver}\namount of bronze medals {bronze}")
     return gold + silver + bronze
 
 
@@ -146,16 +147,22 @@ def main():
     args = parser.parse_args()
     filename = args.filename
     print(args)
-    if args.medals:
+    if args.medals and not args.output:
         country = args.medals[0]
         year = args.medals[1]
         game = args.medals[2]
         game_and_year = year + " " + game
-        medals = find_medals(country, game_and_year, filename)
-        print(f"In general {count_medals(medals)} medals.")
-    # if args.output and args.medals:
-    #     newfile = args.output
-    #     get_output_medals(newfile, for_new)
+        medals, for_new = find_medals(country, game_and_year, filename)
+        print(f"In general {count_medals(medals, for_new)} medals.")
+    if args.output and args.medals:
+        country = args.medals[0]
+        year = args.medals[1]
+        game = args.medals[2]
+        game_and_year = year + " " + game
+        medals, for_new = find_medals(country, game_and_year, filename)
+        print(f"In general {count_medals(medals, for_new)} medals.")
+        newfile = args.output
+        get_output_medals(newfile, for_new)
     if args.total:
         year = args.total[0]
         print(year)
