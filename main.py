@@ -54,9 +54,9 @@ def total(year, filename):
             new_line = line.split("\t")
             if year == new_line[9] and new_line[-1] != 'NA\n':
                 if new_line[6] not in country_medals:
-                    country_medals[new_line[6]] = [new_line[-1]]
+                    country_medals[new_line[6]] = [new_line[-1].split("\n")[0]]
                 else:
-                    country_medals[new_line[6]].append(new_line[-1])
+                    country_medals[new_line[6]].append(new_line[-1].split("\n")[0])
             line = file.readline()
 
     if len(country_medals) == 0:
@@ -68,7 +68,9 @@ def total(year, filename):
 
 
 def overall(country, filename):
-    medals_year = {"": 0}
+    medals_year = {
+
+    }
     with open(filename, "r") as file:
         file.readline()  # headline
         line = file.readline()
@@ -84,7 +86,7 @@ def overall(country, filename):
     return medals_year.items()
 
 
-def count_medals(medals, for_new):
+def count_medals(medals):   # for_new
     gold = 0
     silver = 0
     bronze = 0
@@ -100,6 +102,22 @@ def count_medals(medals, for_new):
     return gold + silver + bronze
 
 
+def check_first(country, filename):
+    min_year = 1000000
+    with open(filename, "r") as file:
+        file.readline()  # headline
+        line = file.readline()
+        while line != "":
+            new_line = line.split("\t")
+            if country == new_line[6] or country == new_line[7]:
+                year = int(new_line[9])
+                if year < min_year:
+                    min_year = year
+                    city = new_line[11]
+            line = file.readline()
+        return min_year, city
+
+
 def interactive(country, filename):
     with open(filename, "r") as file:
         file.readline()  # headline
@@ -107,8 +125,12 @@ def interactive(country, filename):
         while line != "":
             new_line = line.split("\t")
             if country == new_line[6] or country == new_line[7]:
+                min_year1, city = check_first(country, filename)
                 yearx, maximum = max(overall(country, filename))
+                yearm, minimum = min(overall(country, filename))
+                print(f"First attendance in {min_year1} in {city}.")
                 print(f"The most successful olympiad in {yearx} had {maximum} medals.")
+                print(f"The most successful olympiad in {yearm} had {minimum} medals.")
                 exit()
             line = file.readline()
 
@@ -120,6 +142,7 @@ def main():
     parser.add_argument('--output')
     parser.add_argument('--total', '-t', help="Enter year to find number of medals", type=str, nargs='+')
     parser.add_argument('--overall', '-o', help="Enter list of countries", nargs='+')
+    parser.add_argument('--interactive', '-i', help="Enter the country", type=str)
     args = parser.parse_args()
     filename = args.filename
     print(args)
@@ -129,7 +152,7 @@ def main():
         game = args.medals[2]
         game_and_year = year + " " + game
         medals = find_medals(country, game_and_year, filename)
-        count_medals(medals)
+        print(f"In general {count_medals(medals)} medals.")
     # if args.output and args.medals:
     #     newfile = args.output
     #     get_output_medals(newfile, for_new)
@@ -139,9 +162,11 @@ def main():
         print(total(year, filename))
     if args.overall:
         for country in args.overall:
-            print(overall(country, filename))
+            byear, mmmedals = max(overall(country, filename))
+            print(f"For {country} in {byear} the biggest amount of medals is {mmmedals}")
     if args.interactive:
-        pass
+        country = input("Enter the country for statistics: ")
+        print(interactive(country, filename))
 
 
 if __name__ == "__main__":
