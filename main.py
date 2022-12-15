@@ -143,7 +143,7 @@ def main():
     parser.add_argument('--output')
     parser.add_argument('--total', '-t', help="Enter year to find number of medals", type=str, nargs='+')
     parser.add_argument('--overall', '-o', help="Enter list of countries", nargs='+')
-    parser.add_argument('--interactive', '-i', help="Enter the country", type=str)
+    parser.add_argument('--interactive', '-i', help="Enter the country", action="store_true")
     args = parser.parse_args()
     filename = args.filename
     print(args)
