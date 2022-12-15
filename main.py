@@ -44,9 +44,7 @@ def get_output_medals(newfile, for_new):
 
 
 def total(year, filename):
-    country_medals = {
-
-    }
+    country_medals = {}
     print(f"Countries with medals in {year}.")
     with open(filename, "r") as file:
         file.readline()  # headline
@@ -69,13 +67,11 @@ def total(year, filename):
 
 
 def overall(country, filename):
-    medals_year = {
-
-    }
+    medals_year = {}
     with open(filename, "r") as file:
         file.readline()  # headline
         line = file.readline()
-        while line != "":
+        while line:
             new_line = line.split("\t")
             if country == new_line[6] or country == new_line[7]:
                 if new_line[-1] != "NA\n" and new_line[9] not in medals_year:
